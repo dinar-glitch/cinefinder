@@ -1,0 +1,580 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#17120f">
+  <meta name="description" content="CineFinder helps you discover movies and find where to watch them online.">
+  <title>CineFinder — Discover Your Next Movie</title>
+
+  <style>
+    :root {
+      --bg: #17120f;
+      --surface: #211a15;
+      --surface-light: #2b2119;
+      --gold: #c5a46d;
+      --cream: #f3e9d8;
+      --muted: #aa9a87;
+      --border: rgba(197, 164, 109, 0.22);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: Arial, Helvetica, sans-serif;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    button, a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 7%;
+      border-bottom: 1px solid var(--border);
+      background: rgba(23, 18, 15, 0.95);
+      gap: 20px;
+    }
+
+    .logo {
+      font-family: Georgia, serif;
+      font-size: 27px;
+      font-weight: bold;
+      letter-spacing: -1px;
+    }
+
+    .logo span {
+      color: var(--gold);
+    }
+
+    .nav-link {
+      color: var(--muted);
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover {
+      color: var(--gold);
+    }
+
+    .hero {
+      max-width: 1050px;
+      margin: auto;
+      padding: 85px 24px 48px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      color: var(--gold);
+      text-transform: uppercase;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 4px;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(43px, 8vw, 78px);
+      line-height: 1.1;
+      letter-spacing: -2px;
+      font-weight: normal;
+    }
+
+    h1 span {
+      color: var(--gold);
+      font-style: italic;
+    }
+
+    .hero-description {
+      color: var(--muted);
+      max-width: 540px;
+      margin: 23px auto 30px;
+      font-size: 15px;
+    }
+
+    .search-box {
+      display: flex;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      gap: 8px;
+    }
+
+    .search-box input {
+      min-width: 0;
+      flex: 1;
+      padding: 13px;
+      color: var(--cream);
+      background: transparent;
+      border: none;
+      outline: none;
+    }
+
+    .search-box input::placeholder {
+      color: #887967;
+    }
+
+    .gold-button {
+      background: var(--gold);
+      color: #21180e;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 22px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .gold-button:hover {
+      background: #dfc28e;
+      transform: translateY(-1px);
+    }
+
+    .quick-searches {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 19px;
+    }
+
+    .quick-searches button {
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: transparent;
+      padding: 6px 13px;
+      border-radius: 30px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .quick-searches button:hover {
+      color: var(--gold);
+      border-color: var(--gold);
+    }
+
+    .section {
+      max-width: 1200px;
+      margin: auto;
+      padding: 30px 24px 65px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .section-heading h2 {
+      font-family: Georgia, serif;
+      font-size: 29px;
+      font-weight: normal;
+    }
+
+    .section-heading p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .section-label {
+      color: var(--gold);
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    .movie-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 22px 16px;
+    }
+
+    .movie-card {
+      min-width: 0;
+      cursor: pointer;
+      transition: transform 0.25s;
+    }
+
+    .movie-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .poster {
+      aspect-ratio: 2 / 3;
+      width: 100%;
+      object-fit: cover;
+      display: block;
+      border-radius: 9px;
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+    }
+
+    .poster-placeholder {
+      aspect-ratio: 2 / 3;
+      border-radius: 9px;
+      background: linear-gradient(145deg, #38291d, #1d1712);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 12px;
+      color: var(--gold);
+      font-family: Georgia, serif;
+    }
+
+    .movie-title {
+      font-size: 14px;
+      margin-top: 11px;
+      font-weight: bold;
+      line-height: 1.4;
+    }
+
+    .movie-meta {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 55px 20px;
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      color: var(--muted);
+    }
+
+    .empty-state h3 {
+      font-family: Georgia, serif;
+      font-size: 24px;
+      color: var(--cream);
+      margin-bottom: 8px;
+    }
+
+    .empty-state p {
+      font-size: 14px;
+    }
+
+    .search-web {
+      display: inline-block;
+      margin-top: 18px;
+      color: var(--gold);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .status {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 25px;
+    }
+
+    .feature-card .icon {
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+
+    .feature-card h3 {
+      font-family: Georgia, serif;
+      font-size: 19px;
+      font-weight: normal;
+      margin-bottom: 8px;
+    }
+
+    .feature-card p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    footer strong {
+      color: var(--gold);
+    }
+
+    @media (max-width: 850px) {
+      .movie-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding-top: 65px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .navbar {
+        padding: 16px 5%;
+      }
+
+      .logo {
+        font-size: 24px;
+      }
+
+      .hero {
+        padding: 55px 18px 35px;
+      }
+
+      h1 {
+        letter-spacing: -1px;
+      }
+
+      .search-box {
+        flex-direction: column;
+      }
+
+      .search-box input {
+        width: 100%;
+        padding: 13px 10px;
+      }
+
+      .search-box .gold-button {
+        width: 100%;
+      }
+
+      .section {
+        padding: 25px 16px 45px;
+      }
+
+      .movie-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px 13px;
+      }
+
+      .section-heading h2 {
+        font-size: 25px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="navbar">
+    <a href="#" class="logo">Cine<span>Finder</span>.</a>
+    <a href="#discover" class="nav-link">Discover Movies ↗</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">Your world of cinema</p>
+
+      <h1>Every story.<br><span>One search.</span></h1>
+
+      <p class="hero-description">
+        Discover unforgettable movies from around the world
+        and explore where you can watch them online.
+      </p>
+
+      <form class="search-box" id="searchForm">
+        <input
+          type="search"
+          id="movieSearch"
+          placeholder="Search a movie, anime, or actor..."
+          aria-label="Search movies"
+          autocomplete="off"
+          required
+        >
+        <button class="gold-button" type="submit">Find Movies ↗</button>
+      </form>
+
+      <div class="quick-searches">
+        <button type="button" data-query="Interstellar">Interstellar</button>
+        <button type="button" data-query="Inception">Inception</button>
+        <button type="button" data-query="Your Name">Anime</button>
+        <button type="button" data-query="Dune">Dune</button>
+        <button type="button" data-query="RRR">Indian Cinema</button>
+      </div>
+    </section>
+
+    <section class="section" id="discover">
+      <div class="section-heading">
+        <div>
+          <p class="section-label">The collection</p>
+          <h2 id="resultsTitle">Discover Cinema</h2>
+          <p id="resultsDescription">Your next favorite story is waiting.</p>
+        </div>
+      </div>
+
+      <p class="status" id="status" role="status">
+        Search for a movie to begin your discovery.
+      </p>
+
+      <div class="movie-grid" id="movieGrid"></div>
+
+      <div class="empty-state" id="emptyState">
+        <h3>What will you watch next?</h3>
+        <p>Enter any movie title above to explore the world of cinema.</p>
+        <a
+          class="search-web"
+          href="https://www.justwatch.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Explore streaming availability ↗</a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <div>
+          <p class="section-label">Made for movie lovers</p>
+          <h2>Discover More</h2>
+          <p>One destination for your next cinematic adventure.</p>
+        </div>
+      </div>
+
+      <div class="features">
+        <article class="feature-card">
+          <div class="icon">🎬</div>
+          <h3>Global Cinema</h3>
+          <p>Explore Hollywood, Bollywood, anime, South Indian cinema, and films from across the world.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="icon">🔎</div>
+          <h3>Smarter Discovery</h3>
+          <p>Search movie titles and discover relevant information without browsing endless pages.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="icon">🌍</div>
+          <h3>Find Where to Watch</h3>
+          <p>Explore streaming availability and find legitimate viewing options for your region.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p><strong>CineFinder</strong> — Every story deserves to be discovered.</p>
+    <p style="margin-top: 8px;">Movie discovery for entertainment lovers everywhere.</p>
+  </footer>
+
+  <script>
+    const searchForm = document.getElementById("searchForm");
+    const searchInput = document.getElementById("movieSearch");
+    const movieGrid = document.getElementById("movieGrid");
+    const emptyState = document.getElementById("emptyState");
+    const statusText = document.getElementById("status");
+    const resultsTitle = document.getElementById("resultsTitle");
+    const resultsDescription = document.getElementById("resultsDescription");
+
+    function searchMovie(query) {
+      const title = query.trim();
+      if (!title) return;
+
+      searchInput.value = title;
+      resultsTitle.textContent = "Search: " + title;
+      resultsDescription.textContent = "Explore matching movies and viewing options.";
+      statusText.textContent = "Preparing your movie search...";
+      movieGrid.replaceChildren();
+      emptyState.hidden = true;
+
+      const googleUrl = "https://www.google.com/search?q=" +
+        encodeURIComponent('"' + title + '" movie official streaming watch');
+
+      const card = document.createElement("article");
+      card.className = "feature-card";
+      card.style.gridColumn = "1 / -1";
+
+      const heading = document.createElement("h3");
+      heading.textContent = "Find " + title;
+
+      const description = document.createElement("p");
+      description.style.marginTop = "10px";
+      description.textContent =
+        "Search the web for information and legitimate viewing options for this movie.";
+
+      const webLink = document.createElement("a");
+      webLink.className = "search-web";
+      webLink.href = googleUrl;
+      webLink.target = "_blank";
+      webLink.rel = "noopener noreferrer";
+      webLink.textContent = "Search the web ↗";
+
+      const justWatchLink = document.createElement("a");
+      justWatchLink.className = "search-web";
+      justWatchLink.style.marginLeft = "20px";
+      justWatchLink.href = "https://www.justwatch.com/";
+      justWatchLink.target = "_blank";
+      justWatchLink.rel = "noopener noreferrer";
+      justWatchLink.textContent = "Check streaming services ↗";
+
+      card.append(heading, description, webLink, justWatchLink);
+      movieGrid.appendChild(card);
+
+      statusText.textContent =
+        "Your search is ready. Open a link below to explore results.";
+
+      movieGrid.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    searchForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+      searchMovie(searchInput.value);
+    });
+
+    document.querySelectorAll("[data-query]").forEach(function(button) {
+      button.addEventListener("click", function() {
+        searchMovie(button.dataset.query);
+      });
+    });
+  </script>
+</body>
+</html>
+```
